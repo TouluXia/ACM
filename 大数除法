@@ -1,0 +1,66 @@
+代码：
+//高精度除法
+//两个正数相除，商为quotient,余数为residue
+//需要高精度减法和乘法
+void div(string str1,string str2,string &quotient,string &residue)
+{
+    quotient=residue="";//清空
+    if(str2=="0")//判断除数是否为0
+    {
+        quotient=residue="ERROR";
+        return;
+    }
+    if(str1=="0")//判断被除数是否为0
+    {
+        quotient=residue="0";
+        return;
+    }
+    int res=compare(str1,str2);
+    if(res<0)
+    {
+        quotient="0";
+        residue=str1;
+        return;
+    }
+    else if(res==0)
+    {
+        quotient="1";
+        residue="0";
+        return;
+    }
+    else
+    {
+        int len1=str1.length();
+        int len2=str2.length();
+        string tempstr;
+        tempstr.append(str1,0,len2-1); //（1）在tempstr的后面加str1的从0位置开始往后len2-1位，即把str1的前n-1位赋给tempstr，n是str2的长度
+        for(int i=len2-1;i<len1;i++)
+        {
+            tempstr=tempstr+str1[i];
+            tempstr.erase(0,tempstr.find_first_not_of('0'));
+            if(tempstr.empty())
+              tempstr="0";
+            for(char ch='9';ch>='0';ch--)//试商
+            {
+                string str,tmp;
+                str=str+ch;
+                tmp=mul(str2,str);
+                if(compare(tmp,tempstr)<=0)//试商成功
+                {
+                    quotient=quotient+ch;
+                    tempstr=sub(tempstr,tmp);
+                    break;
+                }
+            }
+        }
+        residue=tempstr;
+    }
+    quotient.erase(0,quotient.find_first_not_of('0'));
+    if(quotient.empty()) quotient="0";
+}
+
+说明：
+（1）tempstr.append(str1,0,len2-1);
+举个例子：
+
+
